@@ -68,7 +68,7 @@ python src/main.py
 
 ### Mask Naming Convention
 
-When **Generate Mask** is used, files are named to be automatically detected by **RealityScan** and **RealityCapture**:
+When **Generate Mask** is used, files are named to be automatically detected by **RealityScan**:
 *   Image: `filename.jpg`
 *   Mask: `filename.jpg.mask.png`
 
