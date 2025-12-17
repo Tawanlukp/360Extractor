@@ -147,3 +147,17 @@ We have provided a script that creates a synthetic video with static and moving 
 python tests/verify_adaptive.py
 ```
 *This script runs the CLI with `--adaptive` on a test video and asserts that the number of extracted frames matches the expected count (skipping static parts).*
+
+## Section 7: Testing Telemetry Export
+
+You can verify the GPS/IMU metadata integration. This feature extracts telemetry streams from the video and embeds coordinates into the output images.
+
+**1. Basic Telemetry Extraction:**
+Run the CLI with the `--export-telemetry` flag.
+```bash
+python src/main.py --input videos/sample_360.mp4 --output frames/telemetry_test --export-telemetry
+```
+*Result: Output images will contain EXIF GPS tags (latitude, longitude, altitude) derived from the video telemetry.*
+
+**2. Verification:**
+You can inspect the EXIF data of the generated images using tools like `exiftool` or by checking file properties.

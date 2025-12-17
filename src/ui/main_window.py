@@ -368,6 +368,12 @@ class MainWindow(QMainWindow):
         res_layout.addWidget(self.res_spin)
         export_layout.addLayout(res_layout)
         
+        # Telemetry
+        self.export_telemetry_check = QCheckBox("Export GPS/IMU Metadata")
+        self.export_telemetry_check.setToolTip("Attempts to extract GPMF (GoPro) or CAMM metadata and embed GPS into extracted frames.")
+        self.export_telemetry_check.toggled.connect(self.on_setting_changed)
+        export_layout.addWidget(self.export_telemetry_check)
+
         export_layout.addStretch()
         self.settings_tabs.addTab(tab_export, "Export")
 
@@ -558,6 +564,7 @@ class MainWindow(QMainWindow):
             'camera_count': self.cam_count_spin.value(),
             'layout_mode': self.layout_combo.currentData(),
             'pitch_offset': self.pitch_combo.currentData(),
+            'export_telemetry': self.export_telemetry_check.isChecked(),
             'ai_mode': self.ai_combo.currentText(),
             'adaptive_mode': self.adaptive_check.isChecked(),
             'adaptive_threshold': self.motion_threshold_spin.value(),
@@ -594,6 +601,7 @@ class MainWindow(QMainWindow):
         self.motion_threshold_spin.setEnabled(self.adaptive_check.isChecked())
 
         self.res_spin.setValue(settings.get('resolution', 1024))
+        self.export_telemetry_check.setChecked(settings.get('export_telemetry', False))
         self.fov_spin.setValue(settings.get('fov', 90))
         self.cam_count_spin.setValue(settings.get('camera_count', 6))
         
@@ -632,6 +640,7 @@ class MainWindow(QMainWindow):
         self.adaptive_check.blockSignals(block)
         self.motion_threshold_spin.blockSignals(block)
         self.res_spin.blockSignals(block)
+        self.export_telemetry_check.blockSignals(block)
         self.fov_spin.blockSignals(block)
         self.cam_count_spin.blockSignals(block)
         self.layout_combo.blockSignals(block)

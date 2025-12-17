@@ -8,6 +8,7 @@ from PySide6.QtCore import QObject, Signal
 from core.geometry import GeometryProcessor
 from core.ai_model import AIService
 from core.motion_detector import MotionDetector
+from core.telemetry import TelemetryHandler
 from utils.file_manager import FileManager
 from utils.image_utils import ImageUtils
 from utils.logger import logger
@@ -150,6 +151,14 @@ class ProcessingWorker(QObject):
         adaptive_threshold = job.adaptive_threshold
         last_extracted_frame = None
         
+        # Telemetry Setup
+        telemetry_handler = None
+        current_gps = None
+        if job.export_telemetry:
+            telemetry_handler = TelemetryHandler()
+            logger.info(f"Extracting telemetry for {filename}...")
+            telemetry_handler.extract_metadata(file_path)
+
         # Generate views based on camera count
         views = GeometryProcessor.generate_views(camera_count, pitch_offset=pitch_offset, layout_mode=layout_mode)
         
@@ -178,6 +187,11 @@ class ProcessingWorker(QObject):
                 break
             
             if frame_idx % interval == 0:
+                # Update GPS for current time
+                if telemetry_handler:
+                    current_time = frame_idx / fps if fps > 0 else 0
+                    current_gps = telemetry_handler.get_gps_at_time(current_time)
+
                 # Progress calculation (per job 0-100%)
                 current_job_progress = int((frame_idx / total_frames_video) * 100)
                 
@@ -276,8 +290,12 @@ class ProcessingWorker(QObject):
                     # 5. Save
                     if final_img is not None:
                         save_name = f"{name_no_ext}_frame{frame_idx:06d}_{name}{ext}"
-                        FileManager.save_image(os.path.join(output_dir, save_name), final_img, save_params)
+                        full_save_path = os.path.join(output_dir, save_name)
+                        FileManager.save_image(full_save_path, final_img, save_params)
                         
+                        if current_gps:
+                            telemetry_handler.embed_exif(full_save_path, *current_gps)
+
                         if mask_or_skip is not None and isinstance(mask_or_skip, np.ndarray):
                             # RealityScan naming convention: [Filename].[ext].mask.png
                             # Masks are typically kept as PNG for transparency support

@@ -36,6 +36,10 @@ class Job:
     def adaptive_threshold(self) -> float:
         return self.settings.get('adaptive_threshold', 0.5)
 
+    @property
+    def export_telemetry(self) -> bool:
+        return self.settings.get('export_telemetry', False)
+
     def summary(self) -> str:
         """Returns a short summary of the job settings."""
         # e.g., "High (-20°), 6 cams"

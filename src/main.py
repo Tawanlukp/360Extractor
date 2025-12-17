@@ -34,6 +34,7 @@ def parse_arguments():
     parser.add_argument("--layout", type=str, choices=['adaptive', 'ring'], help="Camera layout mode (adaptive/ring, default: adaptive)")
     parser.add_argument("--adaptive", action="store_true", help="Enable adaptive interval (motion-based)")
     parser.add_argument("--motion-threshold", type=float, help="Motion threshold for adaptive interval (default: 0.5)")
+    parser.add_argument("--export-telemetry", action="store_true", help="Export GPS/IMU metadata (if available)")
     return parser.parse_args()
 
 def load_config(config_path):
@@ -157,6 +158,10 @@ def run_cli(args):
     
     motion_threshold = args.motion_threshold if args.motion_threshold is not None else config.get('adaptive_threshold', 0.5)
     
+    export_telemetry = args.export_telemetry
+    if not export_telemetry:
+        export_telemetry = config.get('export_telemetry', False)
+
     settings = {
         'interval_value': interval,
         'interval_unit': 'Seconds',
@@ -175,7 +180,8 @@ def run_cli(args):
         'smart_blur_enabled': config.get('smart_blur_enabled', False),
         'sharpening_enabled': config.get('sharpening_enabled', False),
         'adaptive_mode': adaptive,
-        'adaptive_threshold': motion_threshold
+        'adaptive_threshold': motion_threshold,
+        'export_telemetry': export_telemetry
     }
 
     jobs = [Job(file_path=f, settings=settings) for f in files_to_process]
