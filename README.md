@@ -11,9 +11,9 @@ High-performance desktop application and command-line tool for 360° video prepr
 - **Advanced Camera Control:**
     - **Dynamic Camera Count:** Configure 2 to 36 cameras.
     - **Layout Modes:** Choose from three explicit layout strategies:
-        - **Ring:** Horizontal ring layout (equally spaced horizon). Available for any camera count.
-        - **Cube Map:** Standard 6-sided cube (Front, Right, Back, Left, Up, Down). Locks camera count to 6.
-        - **Fibonacci:** Evenly distributed sphere points (Fibonacci Sphere). Available for any camera count.
+        - **Ring:** Evenly spaced along the horizon.
+        - **Cube Map:** Fixed 6 cameras (Front, Right, Back, Left, Up, Down). Ignores camera count (forces 6).
+        - **Fibonacci:** Evenly distributed on a sphere.
     - **Selective Extraction:** Render only specific camera angles (e.g., only Front and Back) to save processing time and storage.
     - **Inclination:** Adjust camera pitch (Standard 0°, High -20°, Low +20°) for different capture scenarios.
 - **Blur Filter:** Automatically detect and discard blurry frames based on a configurable threshold (Variance of Laplacian).
