@@ -4,9 +4,9 @@ import logging
 import bisect
 from typing import Optional, Tuple, Any, List, Dict
 import piexif
-from src.utils.gpmf_parser import GPMFParser
-from src.utils.srt_parser import parse_srt_data
-from src.utils.camm_parser import parse_camm_data
+from utils.gpmf_parser import GPMFParser
+from utils.srt_parser import parse_srt_data
+from utils.camm_parser import parse_camm_data
 
 logger = logging.getLogger(__name__)
 
