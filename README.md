@@ -145,13 +145,10 @@ You can define job settings in a JSON file for reuse or complex configurations.
     *   *Seconds:* Good for time-based sampling (e.g., every 1.0s).
     *   *Frames:* Good for exact frame stepping (e.g., every 30 frames).
 *   **Camera Count:** Number of virtual pinhole cameras (2-36).
-    *   *< 6:* Ring layout (equally spaced horizon).
-    *   *6:* **Cube layout** (Front, Right, Back, Left, Up, Down).
-    *   *> 6:* **Fibonacci Sphere** distribution for even coverage.
 *   **Camera Layout:** Select the geometric arrangement of cameras.
-    *   *Ring:* Horizontal ring layout (equally spaced horizon).
-    *   *Cube Map:* Standard 6-sided cube (Front, Right, Back, Left, Up, Down). Locks camera count to 6.
-    *   *Fibonacci:* Evenly distributed points on a sphere.
+    *   *Ring:* Evenly spaced along the horizon.
+    *   *Cube Map:* Fixed 6 cameras (Front, Right, Back, Left, Up, Down). Ignores camera count (forces 6).
+    *   *Fibonacci:* Evenly distributed on a sphere.
 *   **Camera Inclination:** Adjust the vertical tilt of horizontal cameras.
     *   *Standard (0°):* Horizon level.
     *   *High / Perch (-20°):* Tilted down (good for cameras on a high stick).
