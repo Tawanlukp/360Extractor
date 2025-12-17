@@ -1,8 +1,10 @@
 import subprocess
 import json
 import logging
-from typing import Optional, Tuple, Any
+import bisect
+from typing import Optional, Tuple, Any, List, Dict
 import piexif
+from src.utils.gpmf_parser import GPMFParser
 
 logger = logging.getLogger(__name__)
 
@@ -10,6 +12,7 @@ class TelemetryHandler:
     def __init__(self):
         self.metadata = {}
         self.has_gps = False
+        self.gps_samples: List[Dict[str, float]] = []
 
     def extract_metadata(self, video_path: str) -> bool:
         """
@@ -37,8 +40,11 @@ class TelemetryHandler:
                     if 'gpmd' in codec_tag_string or 'camm' in codec_tag_string:
                         self.has_gps = True
                         logger.info(f"Found telemetry stream: {codec_tag_string}")
-                        # In a real implementation, we would extract the binary data here
-                        # using ffmpeg -i video.mp4 -map 0:3 -f data -
+                        
+                        if 'gpmd' in codec_tag_string:
+                            stream_index = stream.get('index')
+                            self._extract_gpmf_data(video_path, stream_index)
+                        
                         return True
                         
             logger.info("No known telemetry stream found.")
@@ -51,22 +57,67 @@ class TelemetryHandler:
             logger.error(f"Error extracting metadata: {e}")
             return False
 
-    def parse_metadata(self, raw_data: Any) -> None:
+    def _extract_gpmf_data(self, video_path: str, stream_index: int):
         """
-        Placeholder for parsing raw telemetry data into a structured format.
+        Extracts and parses GPMF data from the video.
         """
-        # TODO: Implement GPMF/CAMM parsing logic
-        pass
+        try:
+            cmd = [
+                'ffmpeg',
+                '-y',
+                '-i', video_path,
+                '-map', f'0:{stream_index}',
+                '-f', 'data',
+                '-'
+            ]
+            # Use a large buffer size for subprocess to prevent hanging on large outputs
+            result = subprocess.run(cmd, capture_output=True, check=True)
+            raw_data = result.stdout
+            
+            parser = GPMFParser()
+            self.gps_samples = parser.parse(raw_data)
+            logger.info(f"Extracted {len(self.gps_samples)} GPS samples.")
+            
+        except subprocess.CalledProcessError as e:
+            logger.error(f"FFmpeg extraction failed: {e}")
+        except Exception as e:
+            logger.error(f"Error parsing GPMF data: {e}")
 
     def get_gps_at_time(self, timestamp: float) -> Optional[Tuple[float, float, float]]:
         """
         Returns (lat, lon, alt) for a given video timestamp (in seconds).
+        Interpolates between samples.
         """
-        if not self.has_gps:
+        if not self.has_gps or not self.gps_samples:
             return None
             
-        # Placeholder: Return None until parsing logic is implemented
-        return None
+        times = [s['timestamp'] for s in self.gps_samples]
+        
+        # Find insertion point
+        idx = bisect.bisect_left(times, timestamp)
+        
+        if idx == 0:
+            return (self.gps_samples[0]['lat'], self.gps_samples[0]['lon'], self.gps_samples[0]['alt'])
+        if idx >= len(self.gps_samples):
+            return (self.gps_samples[-1]['lat'], self.gps_samples[-1]['lon'], self.gps_samples[-1]['alt'])
+            
+        # Interpolate
+        t1 = times[idx-1]
+        t2 = times[idx]
+        
+        if t2 == t1:
+            return (self.gps_samples[idx]['lat'], self.gps_samples[idx]['lon'], self.gps_samples[idx]['alt'])
+            
+        ratio = (timestamp - t1) / (t2 - t1)
+        
+        p1 = self.gps_samples[idx-1]
+        p2 = self.gps_samples[idx]
+        
+        lat = p1['lat'] + (p2['lat'] - p1['lat']) * ratio
+        lon = p1['lon'] + (p2['lon'] - p1['lon']) * ratio
+        alt = p1['alt'] + (p2['alt'] - p1['alt']) * ratio
+        
+        return (lat, lon, alt)
 
     def embed_exif(self, image_path: str, lat: float, lon: float, alt: float = 0.0) -> bool:
         """

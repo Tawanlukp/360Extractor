@@ -18,7 +18,7 @@ High-performance desktop application and command-line tool for 360° video prepr
     - **Inclination:** Adjust camera pitch (Standard 0°, High -20°, Low +20°) for different capture scenarios.
 - **Blur Filter:** Automatically detect and discard blurry frames based on a configurable threshold (Variance of Laplacian).
 - **GPS/IMU Metadata Integration:** Extract GPS and accelerometer data from GoPro (GPMF) or Insta360 (CAMM) videos and embed it into the output EXIF tags.
-    - *Note:* Current version implements the pipeline (FFmpeg extraction -> EXIF writing). Actual GPMF/CAMM binary parsing logic is a placeholder.
+    - Includes a custom lightweight GPMF binary parser to extract GPS data from GoPro videos directly, without external dependency.
 - **Flexible Extraction:** Control extraction frequency by Seconds or Frames.
 - **Intelligent Keyframing (Adaptive Interval):** Uses Optical Flow to skip static scenes and only extract frames when significant motion occurs (configurable threshold).
 - **AI Operator Removal:** Automatically detect and mask/remove people (operators) from the footage using YOLOv8.
