@@ -32,6 +32,8 @@ def parse_arguments():
     parser.add_argument("--quality", type=int, help="JPEG quality (1-100, default: 95)")
     parser.add_argument("--active-cameras", type=str, help="Comma-separated list of active camera indices (e.g. '0,1,4')")
     parser.add_argument("--layout", type=str, choices=['adaptive', 'ring'], help="Camera layout mode (adaptive/ring, default: adaptive)")
+    parser.add_argument("--adaptive", action="store_true", help="Enable adaptive interval (motion-based)")
+    parser.add_argument("--motion-threshold", type=float, help="Motion threshold for adaptive interval (default: 0.5)")
     return parser.parse_args()
 
 def load_config(config_path):
@@ -147,6 +149,13 @@ def run_cli(args):
     ai_enabled = args.ai # This is True/False from CLI
     if not ai_enabled:
         ai_enabled = config.get('ai', False)
+
+    # Adaptive Mode logic
+    adaptive = args.adaptive
+    if not adaptive:
+        adaptive = config.get('adaptive_mode', False)
+    
+    motion_threshold = args.motion_threshold if args.motion_threshold is not None else config.get('adaptive_threshold', 0.5)
     
     settings = {
         'interval_value': interval,
@@ -164,7 +173,9 @@ def run_cli(args):
         'pitch_offset': config.get('pitch_offset', 0),
         'blur_filter_enabled': config.get('blur_filter_enabled', False),
         'smart_blur_enabled': config.get('smart_blur_enabled', False),
-        'sharpening_enabled': config.get('sharpening_enabled', False)
+        'sharpening_enabled': config.get('sharpening_enabled', False),
+        'adaptive_mode': adaptive,
+        'adaptive_threshold': motion_threshold
     }
 
     jobs = [Job(file_path=f, settings=settings) for f in files_to_process]

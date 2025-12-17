@@ -18,6 +18,7 @@ High-performance desktop application and command-line tool for 360° video prepr
     - **Inclination:** Adjust camera pitch (Standard 0°, High -20°, Low +20°) for different capture scenarios.
 - **Blur Filter:** Automatically detect and discard blurry frames based on a configurable threshold (Variance of Laplacian).
 - **Flexible Extraction:** Control extraction frequency by Seconds or Frames.
+- **Intelligent Keyframing (Adaptive Interval):** Uses Optical Flow to skip static scenes and only extract frames when significant motion occurs (configurable threshold).
 - **AI Operator Removal:** Automatically detect and mask/remove people (operators) from the footage using YOLOv8.
 - **Configuration Support:** Save and load job settings using JSON configuration files.
 - **Batch Processing:** Process multiple heavy (4K-8K) video files efficiently.
@@ -90,6 +91,8 @@ python src/main.py --input <video_path> --output <output_dir> [options]
 | `--layout` | Camera layout mode. 'adaptive' (default) uses Cube/Fibonacci for n>=6. 'ring' forces Ring layout. | `adaptive` |
 | `--quality` | JPEG quality (1-100). | `95` |
 | `--ai` | Enable AI processing (Generate Mask) for operator removal. | `False` |
+| `--adaptive` | Enable intelligent keyframing (skip static scenes). | `False` |
+| `--motion-threshold` | Sensitivity for motion detection (0.0-100.0). Higher = needs more motion to extract. | `5.0` |
 
 #### Examples
 
@@ -156,6 +159,9 @@ You can define job settings in a JSON file for reuse or complex configurations.
     *   *None:* No AI processing.
     *   *Skip Frame:* Discard frames where a person is detected.
     *   *Generate Mask:* Create a mask file for the detected person (for inpainting).
+*   **Intelligent Keyframing (Adaptive Interval):**
+    *   *Enable:* Toggle adaptive extraction.
+    *   *Motion Threshold:* Adjust sensitivity (0.0-100.0). Higher values require more motion to trigger extraction. Default is 5.0.
 
 ### Mask Naming Convention
 

@@ -330,6 +330,29 @@ class MainWindow(QMainWindow):
         interval_controls.addWidget(self.interval_spin)
         interval_controls.addWidget(self.interval_unit)
         interval_layout.addLayout(interval_controls)
+
+        # Adaptive Interval
+        self.adaptive_check = QCheckBox("Adaptive Interval (Motion-Based)")
+        self.adaptive_check.setToolTip("Only extract frames when significant motion is detected.")
+        self.adaptive_check.toggled.connect(self.on_adaptive_toggled)
+        interval_layout.addWidget(self.adaptive_check)
+        
+        # Motion Threshold
+        motion_layout = QHBoxLayout()
+        self.motion_label = QLabel("Motion Threshold:")
+        motion_layout.addWidget(self.motion_label)
+        
+        self.motion_threshold_spin = QDoubleSpinBox()
+        self.motion_threshold_spin.setRange(0.0, 10.0)
+        self.motion_threshold_spin.setValue(0.5)
+        self.motion_threshold_spin.setSingleStep(0.1)
+        self.motion_threshold_spin.setEnabled(False)
+        self.motion_threshold_spin.valueChanged.connect(self.on_setting_changed)
+        self.motion_threshold_spin.installEventFilter(self.scroll_blocker)
+        motion_layout.addWidget(self.motion_threshold_spin)
+        
+        interval_layout.addLayout(motion_layout)
+        
         export_layout.addLayout(interval_layout)
 
         # Output Resolution
@@ -536,6 +559,8 @@ class MainWindow(QMainWindow):
             'layout_mode': self.layout_combo.currentData(),
             'pitch_offset': self.pitch_combo.currentData(),
             'ai_mode': self.ai_combo.currentText(),
+            'adaptive_mode': self.adaptive_check.isChecked(),
+            'adaptive_threshold': self.motion_threshold_spin.value(),
             'blur_filter_enabled': self.blur_check.isChecked(),
             'smart_blur_enabled': self.smart_blur_check.isChecked(),
             'blur_threshold': self.blur_threshold_spin.value(),
@@ -563,6 +588,11 @@ class MainWindow(QMainWindow):
 
         self.interval_spin.setValue(settings.get('interval_value', 1.0))
         self.interval_unit.setCurrentText(settings.get('interval_unit', 'Seconds'))
+        
+        self.adaptive_check.setChecked(settings.get('adaptive_mode', False))
+        self.motion_threshold_spin.setValue(settings.get('adaptive_threshold', 0.5))
+        self.motion_threshold_spin.setEnabled(self.adaptive_check.isChecked())
+
         self.res_spin.setValue(settings.get('resolution', 1024))
         self.fov_spin.setValue(settings.get('fov', 90))
         self.cam_count_spin.setValue(settings.get('camera_count', 6))
@@ -599,6 +629,8 @@ class MainWindow(QMainWindow):
         self.format_combo.blockSignals(block)
         self.interval_spin.blockSignals(block)
         self.interval_unit.blockSignals(block)
+        self.adaptive_check.blockSignals(block)
+        self.motion_threshold_spin.blockSignals(block)
         self.res_spin.blockSignals(block)
         self.fov_spin.blockSignals(block)
         self.cam_count_spin.blockSignals(block)
@@ -613,6 +645,10 @@ class MainWindow(QMainWindow):
 
     def update_default_settings_from_ui(self):
         self.default_settings = self.get_settings_from_ui()
+
+    def on_adaptive_toggled(self, checked):
+        self.motion_threshold_spin.setEnabled(checked)
+        self.on_setting_changed()
 
     def select_output_directory(self):
         dir_path = QFileDialog.getExistingDirectory(self, "Select Output Directory")

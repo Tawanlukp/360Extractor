@@ -124,3 +124,26 @@ This uses the standard behavior (Cube for 6 cameras).
 python src/main.py --input videos/sample_360.mp4 --output frames/cube_test --camera-count 6 --layout adaptive
 ```
 *Result: Cube views (Front, Right, Back, Left, Up, Down).*
+
+## Section 6: Testing Adaptive Interval (Intelligent Keyframing)
+
+You can test the motion-based extraction which skips static scenes.
+
+**1. Basic Adaptive Extraction:**
+Enable adaptive mode with the default threshold.
+```bash
+python src/main.py --input videos/sample_360.mp4 --output frames/adaptive_test --adaptive
+```
+
+**2. Custom Motion Threshold:**
+Adjust the sensitivity. Higher values (e.g., 20.0) require more motion to trigger extraction.
+```bash
+python src/main.py --input videos/sample_360.mp4 --output frames/adaptive_high_thresh --adaptive --motion-threshold 20.0
+```
+
+**3. Verification Script:**
+We have provided a script that creates a synthetic video with static and moving segments to verify that frames are skipped correctly.
+```bash
+python tests/verify_adaptive.py
+```
+*This script runs the CLI with `--adaptive` on a test video and asserts that the number of extracted frames matches the expected count (skipping static parts).*

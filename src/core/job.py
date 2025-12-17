@@ -28,6 +28,14 @@ class Job:
     def smart_blur(self) -> bool:
         return self.settings.get('smart_blur_enabled', False)
 
+    @property
+    def adaptive_mode(self) -> bool:
+        return self.settings.get('adaptive_mode', False)
+
+    @property
+    def adaptive_threshold(self) -> float:
+        return self.settings.get('adaptive_threshold', 0.5)
+
     def summary(self) -> str:
         """Returns a short summary of the job settings."""
         # e.g., "High (-20°), 6 cams"
@@ -39,4 +47,5 @@ class Job:
         cams = self.settings.get('camera_count', 6)
         layout = self.settings.get('layout_mode', 'adaptive')
         layout_info = " (Ring)" if layout == 'ring' else ""
-        return f"{pitch_name} ({pitch_val}°), {cams} cams{layout_info}"
+        adaptive = " [Adaptive]" if self.adaptive_mode else ""
+        return f"{pitch_name} ({pitch_val}°), {cams} cams{layout_info}{adaptive}"

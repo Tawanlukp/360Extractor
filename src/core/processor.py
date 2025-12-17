@@ -7,6 +7,7 @@ from PySide6.QtCore import QObject, Signal
 
 from core.geometry import GeometryProcessor
 from core.ai_model import AIService
+from core.motion_detector import MotionDetector
 from utils.file_manager import FileManager
 from utils.image_utils import ImageUtils
 from utils.logger import logger
@@ -34,6 +35,8 @@ class ProcessingWorker(QObject):
              # Initialize YOLO model
              # Note: Using 'yolov8n-seg.pt' (nano) for performance.
              self.ai_service = AIService('yolov8n-seg.pt')
+
+        self.motion_detector = MotionDetector()
 
     def stop(self):
         self.is_running = False
@@ -141,6 +144,11 @@ class ProcessingWorker(QObject):
         # Sharpening Settings
         sharpen_enabled = job.settings.get('sharpening_enabled', False)
         sharpen_strength = job.settings.get('sharpening_strength', 0.5)
+
+        # Adaptive Settings
+        adaptive_mode = job.adaptive_mode
+        adaptive_threshold = job.adaptive_threshold
+        last_extracted_frame = None
         
         # Generate views based on camera count
         views = GeometryProcessor.generate_views(camera_count, pitch_offset=pitch_offset, layout_mode=layout_mode)
@@ -189,6 +197,17 @@ class ProcessingWorker(QObject):
                     current_job_progress,
                     f"Processing {filename} - Frame {frame_idx}/{total_frames_video} - {eta_str}"
                 )
+
+                # Adaptive Check
+                if adaptive_mode:
+                    if last_extracted_frame is not None:
+                        motion_score = self.motion_detector.calculate_motion_score(last_extracted_frame, frame)
+                        if motion_score <= adaptive_threshold:
+                            # Skip extraction
+                            frame_idx += 1
+                            continue
+                    
+                    last_extracted_frame = frame.copy()
 
                 for name, _, _, _ in views:
                     if name not in maps:
