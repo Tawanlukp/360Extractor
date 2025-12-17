@@ -7,7 +7,7 @@ High-performance desktop application and command-line tool for 360° video prepr
 - **360° to Rectilinear:** Reproject equirectangular video to pinhole views with configurable FOV and overlap.
 - **Dual Interface:**
     - **GUI:** User-friendly interface with drag-and-drop support, real-time preview, and batch processing queue.
-    - **CLI:** Headless mode for server environments, automation scripts, and remote execution.
+    - **CLI:** Headless mode for server environments with a real-time visual progress bar.
 - **Advanced Camera Control:**
     - **Dynamic Camera Count:** Configure 2 to 36 cameras.
     - **Layout Modes:** Choose from three explicit layout strategies:
@@ -75,6 +75,8 @@ Run the application without arguments to launch the GUI:
 ### CLI Mode (Command Line Interface)
 
 Run the application in headless mode by providing the `--input` argument or a configuration file. This is ideal for automation or server environments.
+
+- **Visual Progress:** Displays a real-time progress bar (via `tqdm`) showing the completion percentage and estimated time remaining for both individual files and the entire batch.
 
 #### Basic Syntax
 ```bash

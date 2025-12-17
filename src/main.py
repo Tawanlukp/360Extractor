@@ -193,20 +193,22 @@ def run_cli(args):
     
     # Progress Bar Handling
     if TQDM_AVAILABLE:
-        # Create a progress bar
-        # We'll use a total of 100 * num_jobs, or simpler: just update description
-        # Since ProcessingWorker emits 0-100 per job, it's a bit tricky to map to a single global bar 
-        # unless we know total frames.
-        # But we can have a bar that updates 0-100 for current job.
-        
-        pbar = tqdm(total=100, unit="%", bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}]')
+        current_job_idx = [0] # Use a list to make it mutable in closures
+        pbar = tqdm(total=100, unit="%", bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt}% [{elapsed}<{remaining}]')
         
         def update_progress(val, msg):
-            pbar.set_description(msg.split(" - ")[0]) # Shorten msg
-            pbar.n = val
+            # Calculate global percentage: (current_job * 100 + current_val) / total_jobs
+            overall_pct = (current_job_idx[0] * 100 + val) / len(jobs)
+            pbar.set_description(msg.split(" - ")[0]) # Show current file in description
+            pbar.n = round(overall_pct, 1)
             pbar.refresh()
             
+        def on_job_started(idx):
+            current_job_idx[0] = idx
+            
         def on_finished():
+            pbar.n = 100
+            pbar.refresh()
             pbar.close()
             logger.info("All jobs finished.")
             
@@ -214,6 +216,7 @@ def run_cli(args):
             pbar.write(f"ERROR: {err}") # Write above bar
             
         worker.progress_updated.connect(update_progress)
+        worker.job_started.connect(on_job_started)
         worker.error_occurred.connect(on_error)
         worker.finished.connect(on_finished)
         
