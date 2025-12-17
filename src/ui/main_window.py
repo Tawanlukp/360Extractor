@@ -333,7 +333,7 @@ class MainWindow(QMainWindow):
 
         # Adaptive Interval
         self.adaptive_check = QCheckBox("Adaptive Interval (Motion-Based)")
-        self.adaptive_check.setToolTip("Only extract frames when significant motion is detected.")
+        self.adaptive_check.setToolTip("Analyzes optical flow to skip redundant frames when the camera is stationary. Useful for photogrammetry datasets.")
         self.adaptive_check.toggled.connect(self.on_adaptive_toggled)
         interval_layout.addWidget(self.adaptive_check)
         
