@@ -118,7 +118,7 @@ class ProcessingWorker(QObject):
             interval = int(max(1, fps * interval_value))
         
         # Geometry Settings
-        out_res = job.settings.get('resolution', 1024)
+        out_res = job.resolution
         fov = job.settings.get('fov', 90)
         camera_count = job.settings.get('camera_count', 6)
         pitch_offset = job.settings.get('pitch_offset', 0)

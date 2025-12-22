@@ -6,7 +6,7 @@ class SettingsManager:
     _instance = None
     
     DEFAULT_SETTINGS = {
-        "resolution": 1024,
+        "resolution": 2048,
         "fov": 90,
         "camera_count": 6,
         "pitch_offset": 0,

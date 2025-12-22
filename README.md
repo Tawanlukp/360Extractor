@@ -93,6 +93,7 @@ python src/main.py --input <video_path> --output <output_dir> [options]
 | `--format` | Output image format (`jpg` or `png`). | `jpg` |
 | `--camera-count` | Number of virtual cameras (2-36). | `6` |
 | `--active-cameras` | Comma-separated list of camera indices to extract (e.g., `0,2,4`). | All |
+| `--resolution` | Output image resolution (width/height). | `2048` |
 | `--layout` | Camera layout mode: `ring`, `cube`, or `fibonacci`. | `ring` |
 | `--quality` | JPEG quality (1-100). | `95` |
 | `--ai` | Enable AI processing (Generate Mask) for operator removal. | `False` |
@@ -134,6 +135,7 @@ You can define job settings in a JSON file for reuse or complex configurations.
     "format": "png",
     "camera_count": 6,
     "active_cameras": [0, 1, 2, 3],
+    "resolution": 2048,
     "quality": 100,
     "ai": true
 }

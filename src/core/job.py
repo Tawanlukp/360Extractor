@@ -37,6 +37,10 @@ class Job:
         return self.settings.get('adaptive_threshold', 0.5)
 
     @property
+    def resolution(self) -> int:
+        return self.settings.get('resolution', 2048)
+
+    @property
     def export_telemetry(self) -> bool:
         return self.settings.get('export_telemetry', False)
 

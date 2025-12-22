@@ -31,6 +31,7 @@ def parse_arguments():
     parser.add_argument("--camera-count", type=int, help="Number of virtual cameras (default: 6)")
     parser.add_argument("--quality", type=int, help="JPEG quality (1-100, default: 95)")
     parser.add_argument("--active-cameras", type=str, help="Comma-separated list of active camera indices (e.g. '0,1,4')")
+    parser.add_argument("--resolution", type=int, help="Output image resolution (width/height) (default: 2048)")
     parser.add_argument("--layout", type=str, choices=['ring', 'cube', 'fibonacci'], help="Camera layout mode (ring/cube/fibonacci, default: ring)")
     parser.add_argument("--adaptive", action="store_true", help="Enable adaptive interval (motion-based)")
     parser.add_argument("--motion-threshold", type=float, help="Motion threshold for adaptive interval (default: 0.5)")
@@ -144,6 +145,7 @@ def run_cli(args):
     fmt = args.format if args.format is not None else config.get('format', 'jpg')
     cam_count = args.camera_count if args.camera_count is not None else config.get('camera_count', 6)
     quality = args.quality if args.quality is not None else config.get('quality', 95)
+    resolution = args.resolution if args.resolution is not None else config.get('resolution', 2048)
     layout_mode = args.layout if args.layout is not None else config.get('layout_mode', 'ring')
     
     # AI Mode logic
@@ -173,7 +175,7 @@ def run_cli(args):
         'custom_output_dir': output_path,
         'active_cameras': active_cameras,
         # Defaults for others (could be exposed to config later)
-        'resolution': config.get('resolution', 1024),
+        'resolution': resolution,
         'fov': config.get('fov', 90),
         'pitch_offset': config.get('pitch_offset', 0),
         'blur_filter_enabled': config.get('blur_filter_enabled', False),
